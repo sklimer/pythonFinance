@@ -1,5 +1,6 @@
-from kivy.properties import DictProperty
+from kivy.properties import DictProperty, ListProperty
 from kivy.app import App
+from kivy.clock import Clock
 
 class ThemeManager:
     """Менеджер тем приложения"""
@@ -80,6 +81,7 @@ class ThemeManager:
     
     def __init__(self):
         self.current_theme = 'light'  # По умолчанию светлая тема
+        self._observers = []
         
         # Загружаем сохраненную тему
         try:
@@ -98,6 +100,24 @@ class ThemeManager:
         """Получить все цвета текущей темы"""
         return self.themes[self.current_theme]
     
+    def register_observer(self, callback):
+        """Регистрация наблюдателя за изменениями темы"""
+        if callback not in self._observers:
+            self._observers.append(callback)
+    
+    def unregister_observer(self, callback):
+        """Отписка наблюдателя"""
+        if callback in self._observers:
+            self._observers.remove(callback)
+    
+    def notify_observers(self):
+        """Уведомление всех наблюдателей об изменении темы"""
+        for callback in self._observers:
+            try:
+                callback()
+            except Exception as e:
+                print(f"Error notifying observer: {e}")
+    
     def switch_theme(self, theme_name):
         """Переключить тему"""
         if theme_name in self.themes:
@@ -106,23 +126,11 @@ class ThemeManager:
             with open('theme_setting.txt', 'w') as f:
                 f.write(theme_name)
             
-            # Применяем тему ко всему приложению
-            app = App.get_running_app()
-            if app and app.root:
-                self.apply_theme_to_widget(app.root)
+            # Уведомляем наблюдателей
+            Clock.schedule_once(lambda dt: self.notify_observers(), 0)
             
             return True
         return False
-    
-    def apply_theme_to_widget(self, widget):
-        """Рекурсивно применяем тему ко всем виджетам"""
-        # Применяем тему к текущему виджету
-        if hasattr(widget, 'apply_theme'):
-            widget.apply_theme()
-        
-        # Применяем к дочерним виджетам
-        for child in widget.children:
-            self.apply_theme_to_widget(child)
     
     def get_current_theme(self):
         return self.current_theme

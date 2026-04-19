@@ -1,0 +1,339 @@
+#:import theme_manager themes.theme_manager
+
+<AccountsScreen>:
+    BoxLayout:
+        id: container
+        orientation: 'vertical'
+        
+        # Заголовок
+        BoxLayout:
+            size_hint_y: 0.08
+            padding: dp(16)
+            canvas.before:
+                Color:
+                    rgba: theme_manager.get_color('surface')
+                RoundedRectangle:
+                    pos: self.pos
+                    size: self.size
+                    radius: [0, 0, 15, 15]
+            
+            Label:
+                text: '💰 Мои счета'
+                font_size: 24
+                bold: True
+                color: theme_manager.get_color('text_primary')
+        
+        # Счета
+        BoxLayout:
+            orientation: 'vertical'
+            size_hint_y: 0.4
+            padding: dp(10)
+            spacing: dp(5)
+            
+            BoxLayout:
+                size_hint_y: None
+                height: dp(35)
+                padding: dp(10, 0)
+                
+                Label:
+                    text: 'Счета'
+                    font_size: 18
+                    bold: True
+                    color: theme_manager.get_color('text_primary')
+                    halign: 'left'
+                    size_hint_x: 0.7
+                
+                Button:
+                    text: '+'
+                    font_size: 20
+                    size_hint_x: 0.3
+                    background_color: theme_manager.get_color('primary')
+                    color: theme_manager.get_color('text_on_primary')
+                    on_press: root.show_add_account_dialog()
+            
+            ScrollView:
+                BoxLayout:
+                    id: accounts_list
+                    orientation: 'vertical'
+                    size_hint_y: None
+                    height: self.minimum_height
+                    spacing: dp(5)
+                    padding: dp(10)
+        
+        # Долги
+        BoxLayout:
+            orientation: 'vertical'
+            size_hint_y: 0.5
+            padding: dp(10)
+            spacing: dp(5)
+            
+            BoxLayout:
+                size_hint_y: None
+                height: dp(35)
+                padding: dp(10, 0)
+                
+                Label:
+                    text: 'Долги'
+                    font_size: 18
+                    bold: True
+                    color: theme_manager.get_color('text_primary')
+                    halign: 'left'
+                    size_hint_x: 0.7
+                
+                BoxLayout:
+                    size_hint_x: 0.3
+                    spacing: dp(5)
+                    
+                    BoxLayout:
+                        size_hint_x: 0.5
+                        padding: dp(5)
+                        canvas.before:
+                            Color:
+                                rgba: theme_manager.get_color('danger')
+                            RoundedRectangle:
+                                pos: self.pos
+                                size: self.size
+                                radius: [8]
+                        
+                        Label:
+                            id: i_owe_label
+                            text: '-0 ₽'
+                            color: 1, 1, 1, 1
+                            font_size: 12
+                    
+                    BoxLayout:
+                        size_hint_x: 0.5
+                        padding: dp(5)
+                        canvas.before:
+                            Color:
+                                rgba: theme_manager.get_color('success')
+                            RoundedRectangle:
+                                pos: self.pos
+                                size: self.size
+                                radius: [8]
+                        
+                        Label:
+                            id: owed_to_me_label
+                            text: '+0 ₽'
+                            color: 1, 1, 1, 1
+                            font_size: 12
+            
+            ScrollView:
+                BoxLayout:
+                    id: debts_list
+                    orientation: 'vertical'
+                    size_hint_y: None
+                    height: self.minimum_height
+                    spacing: dp(5)
+                    padding: dp(10)
+            
+            BoxLayout:
+                size_hint_y: None
+                height: dp(40)
+                padding: dp(10, 0)
+                
+                Button:
+                    text: '+ Добавить долг'
+                    font_size: 14
+                    background_color: theme_manager.get_color('secondary')
+                    color: theme_manager.get_color('text_on_primary')
+                    on_press: root.show_add_debt_dialog()
+        
+        # Нижняя навигация
+        BoxLayout:
+            size_hint_y: 0.1
+            padding: dp(5)
+            spacing: dp(5)
+            canvas.before:
+                Color:
+                    rgba: theme_manager.get_color('nav_background')
+                Rectangle:
+                    pos: self.pos
+                    size: self.size
+            
+            Button:
+                text: '🏦 Счета'
+                font_size: 14
+                background_color: theme_manager.get_color('nav_active')
+                color: theme_manager.get_color('text_on_primary')
+                on_press: app.root.current = 'accounts'
+            
+            Button:
+                text: '📊 Операции'
+                font_size: 14
+                background_color: theme_manager.get_color('nav_inactive')
+                color: theme_manager.get_color('text_on_primary')
+                on_press: app.root.current = 'operations'
+            
+            Button:
+                text: '📈 Аналитика'
+                font_size: 14
+                background_color: theme_manager.get_color('nav_inactive')
+                color: theme_manager.get_color('text_on_primary')
+                on_press: app.root.current = 'analytics'
+            
+            Button:
+                text: '⚙️ Еще'
+                font_size: 14
+                background_color: theme_manager.get_color('nav_inactive')
+                color: theme_manager.get_color('text_on_primary')
+                on_press: app.root.current = 'more'
+        
+        # Popup для добавления счета
+        BoxLayout:
+            id: add_account_popup
+            opacity: 0
+            disabled: True
+            orientation: 'vertical'
+            padding: dp(20)
+            spacing: dp(10)
+            canvas.before:
+                Color:
+                    rgba: 0, 0, 0, 0.5
+                Rectangle:
+                    pos: self.pos
+                    size: self.size
+            
+            BoxLayout:
+                size_hint_y: None
+                height: dp(200)
+                padding: dp(20)
+                spacing: dp(10)
+                orientation: 'vertical'
+                canvas.before:
+                    Color:
+                        rgba: theme_manager.get_color('dialog')
+                    RoundedRectangle:
+                        pos: self.pos
+                        size: self.size
+                        radius: [15]
+                
+                Label:
+                    text: 'Новый счет'
+                    font_size: 20
+                    bold: True
+                    color: theme_manager.get_color('text_primary')
+                    size_hint_y: 0.2
+                
+                TextInput:
+                    id: account_name_input
+                    hint_text: 'Название счета'
+                    multiline: False
+                    background_color: theme_manager.get_color('surface_secondary')
+                    foreground_color: theme_manager.get_color('text_primary')
+                    cursor_color: theme_manager.get_color('text_primary')
+                    size_hint_y: 0.2
+                
+                TextInput:
+                    id: account_balance_input
+                    hint_text: 'Баланс'
+                    multiline: False
+                    input_filter: 'float'
+                    background_color: theme_manager.get_color('surface_secondary')
+                    foreground_color: theme_manager.get_color('text_primary')
+                    cursor_color: theme_manager.get_color('text_primary')
+                    size_hint_y: 0.2
+                
+                BoxLayout:
+                    size_hint_y: 0.2
+                    spacing: dp(10)
+                    
+                    Button:
+                        text: 'Отмена'
+                        background_color: theme_manager.get_color('button_normal')
+                        color: theme_manager.get_color('text_primary')
+                        on_press: root.hide_add_account_dialog()
+                    
+                    Button:
+                        text: 'Добавить'
+                        background_color: theme_manager.get_color('primary')
+                        color: theme_manager.get_color('text_on_primary')
+                        on_press: root.add_account()
+        
+        # Popup для добавления долга
+        BoxLayout:
+            id: add_debt_popup
+            opacity: 0
+            disabled: True
+            orientation: 'vertical'
+            padding: dp(20)
+            spacing: dp(10)
+            canvas.before:
+                Color:
+                    rgba: 0, 0, 0, 0.5
+                Rectangle:
+                    pos: self.pos
+                    size: self.size
+            
+            BoxLayout:
+                size_hint_y: None
+                height: dp(280)
+                padding: dp(20)
+                spacing: dp(10)
+                orientation: 'vertical'
+                canvas.before:
+                    Color:
+                        rgba: theme_manager.get_color('dialog')
+                    RoundedRectangle:
+                        pos: self.pos
+                        size: self.size
+                        radius: [15]
+                
+                Label:
+                    text: 'Новый долг'
+                    font_size: 20
+                    bold: True
+                    color: theme_manager.get_color('text_primary')
+                    size_hint_y: 0.15
+                
+                TextInput:
+                    id: debt_name_input
+                    hint_text: 'Имя/Название'
+                    multiline: False
+                    background_color: theme_manager.get_color('surface_secondary')
+                    foreground_color: theme_manager.get_color('text_primary')
+                    cursor_color: theme_manager.get_color('text_primary')
+                    size_hint_y: 0.15
+                
+                TextInput:
+                    id: debt_amount_input
+                    hint_text: 'Сумма'
+                    multiline: False
+                    input_filter: 'float'
+                    background_color: theme_manager.get_color('surface_secondary')
+                    foreground_color: theme_manager.get_color('text_primary')
+                    cursor_color: theme_manager.get_color('text_primary')
+                    size_hint_y: 0.15
+                
+                Spinner:
+                    id: debt_type_spinner
+                    text: 'Я должен'
+                    values: ['Я должен', 'Мне должны']
+                    background_color: theme_manager.get_color('surface_secondary')
+                    color: theme_manager.get_color('text_primary')
+                    size_hint_y: 0.15
+                
+                TextInput:
+                    id: debt_description_input
+                    hint_text: 'Описание (необязательно)'
+                    multiline: False
+                    background_color: theme_manager.get_color('surface_secondary')
+                    foreground_color: theme_manager.get_color('text_primary')
+                    cursor_color: theme_manager.get_color('text_primary')
+                    size_hint_y: 0.15
+                
+                BoxLayout:
+                    size_hint_y: 0.15
+                    spacing: dp(10)
+                    
+                    Button:
+                        text: 'Отмена'
+                        background_color: theme_manager.get_color('button_normal')
+                        color: theme_manager.get_color('text_primary')
+                        on_press: root.hide_add_debt_dialog()
+                    
+                    Button:
+                        text: 'Добавить'
+                        background_color: theme_manager.get_color('primary')
+                        color: theme_manager.get_color('text_on_primary')
+                        on_press: root.add_debt()
