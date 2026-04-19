@@ -1,0 +1,191 @@
+<MoreScreen>:
+    BoxLayout:
+        orientation: 'vertical'
+        
+        # Заголовок
+        BoxLayout:
+            size_hint_y: 0.08
+            padding: dp(16)
+            Label:
+                text: 'Настройки'
+                font_size: 24
+                bold: True
+        
+        # Список настроек
+        ScrollView:
+            BoxLayout:
+                orientation: 'vertical'
+                size_hint_y: None
+                height: self.minimum_height
+                spacing: dp(10)
+                padding: dp(16)
+                
+                # Настройка темы
+                BoxLayout:
+                    size_hint_y: None
+                    height: dp(60)
+                    padding: dp(10)
+                    spacing: dp(10)
+                    canvas.before:
+                        Color:
+                            rgba: theme_manager.get_color('card')
+                        RoundedRectangle:
+                            pos: self.pos
+                            size: self.size
+                            radius: [10]
+                    
+                    Label:
+                        text: '🌙 Темная тема'
+                        font_size: 16
+                        size_hint_x: 0.7
+                        halign: 'left'
+                    
+                    Switch:
+                        id: theme_switch
+                        size_hint_x: 0.3
+                        active: False
+                        on_active: root.toggle_theme(*args)
+                
+                # Статус темы
+                BoxLayout:
+                    size_hint_y: None
+                    height: dp(40)
+                    Label:
+                        id: theme_status
+                        text: 'Светлая тема'
+                        font_size: 14
+                        color: theme_manager.get_color('text_secondary')
+                
+                # Разделитель
+                BoxLayout:
+                    size_hint_y: None
+                    height: dp(20)
+                
+                # Экспорт данных
+                BoxLayout:
+                    size_hint_y: None
+                    height: dp(50)
+                    padding: dp(10)
+                    canvas.before:
+                        Color:
+                            rgba: theme_manager.get_color('card')
+                        RoundedRectangle:
+                            pos: self.pos
+                            size: self.size
+                            radius: [10]
+                    
+                    Label:
+                        text: '📁 Экспорт данных'
+                        font_size: 16
+                        size_hint_x: 0.7
+                        halign: 'left'
+                    
+                    Button:
+                        text: 'Экспорт'
+                        size_hint_x: 0.3
+                        background_color: theme_manager.get_color('primary')
+                        on_press: root.export_data()
+                
+                # Резервное копирование
+                BoxLayout:
+                    size_hint_y: None
+                    height: dp(50)
+                    padding: dp(10)
+                    canvas.before:
+                        Color:
+                            rgba: theme_manager.get_color('card')
+                        RoundedRectangle:
+                            pos: self.pos
+                            size: self.size
+                            radius: [10]
+                    
+                    Label:
+                        text: '💾 Резервное копирование'
+                        font_size: 16
+                        size_hint_x: 0.7
+                        halign: 'left'
+                    
+                    Button:
+                        text: 'Создать'
+                        size_hint_x: 0.3
+                        background_color: theme_manager.get_color('primary')
+                        on_press: root.backup_data()
+                
+                # Разделитель
+                BoxLayout:
+                    size_hint_y: None
+                    height: dp(20)
+                
+                # Информация
+                BoxLayout:
+                    size_hint_y: None
+                    height: dp(100)
+                    orientation: 'vertical'
+                    padding: dp(10)
+                    canvas.before:
+                        Color:
+                            rgba: theme_manager.get_color('card')
+                        RoundedRectangle:
+                            pos: self.pos
+                            size: self.size
+                            radius: [10]
+                    
+                    Label:
+                        text: 'Дзен Мани'
+                        font_size: 18
+                        bold: True
+                    
+                    Label:
+                        text: 'Версия 1.0.0'
+                        font_size: 14
+                        color: theme_manager.get_color('text_secondary')
+                    
+                    Label:
+                        text: '© 2026 Ваше имя'
+                        font_size: 12
+                        color: theme_manager.get_color('text_disabled')
+                
+                # Сообщение
+                Label:
+                    id: message_label
+                    size_hint_y: None
+                    height: dp(40)
+                    font_size: 12
+                    color: theme_manager.get_color('text_secondary')
+                    text: ''
+        
+        # Нижняя навигация
+        BoxLayout:
+            size_hint_y: 0.1
+            padding: dp(5)
+            spacing: dp(5)
+            canvas.before:
+                Color:
+                    rgba: theme_manager.get_color('nav_background')
+                Rectangle:
+                    pos: self.pos
+                    size: self.size
+            
+            Button:
+                text: '🏦 Счета'
+                font_size: 14
+                background_color: theme_manager.get_color('nav_inactive')
+                on_press: app.root.current = 'accounts'
+            
+            Button:
+                text: '📊 Операции'
+                font_size: 14
+                background_color: theme_manager.get_color('nav_inactive')
+                on_press: app.root.current = 'operations'
+            
+            Button:
+                text: '📈 Аналитика'
+                font_size: 14
+                background_color: theme_manager.get_color('nav_inactive')
+                on_press: app.root.current = 'analytics'
+            
+            Button:
+                text: '⚙️ Еще'
+                font_size: 14
+                background_color: theme_manager.get_color('nav_active')
+                on_press: app.root.current = 'more'
