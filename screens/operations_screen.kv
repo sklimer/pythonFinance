@@ -1,0 +1,200 @@
+#:import theme_manager themes.theme_manager
+
+<OperationsScreen>:
+    BoxLayout:
+        id: container
+        orientation: 'vertical'
+        
+        # Заголовок
+        BoxLayout:
+            size_hint_y: 0.08
+            padding: dp(16)
+            canvas.before:
+                Color:
+                    rgba: theme_manager.get_color('surface')
+                RoundedRectangle:
+                    pos: self.pos
+                    size: self.size
+                    radius: [0, 0, 15, 15]
+            
+            Label:
+                text: '📊 Операции'
+                font_size: 24
+                bold: True
+                color: theme_manager.get_color('text_primary')
+        
+        # Фильтр по типу операции
+        BoxLayout:
+            size_hint_y: None
+            height: dp(45)
+            padding: dp(10, 0)
+            spacing: dp(10)
+            
+            Button:
+                id: expense_btn
+                text: 'Расходы'
+                font_size: 14
+                background_color: 0.8, 0.2, 0.2, 1
+                color: 1, 1, 1, 1
+                on_press: root.set_type('expense')
+            
+            Button:
+                id: income_btn
+                text: 'Доходы'
+                font_size: 14
+                background_color: 0.3, 0.3, 0.3, 1
+                color: 1, 1, 1, 1
+                on_press: root.set_type('income')
+            
+            Button:
+                text: '+'
+                font_size: 20
+                size_hint_x: 0.3
+                background_color: theme_manager.get_color('primary')
+                color: theme_manager.get_color('text_on_primary')
+                on_press: root.show_add_operation_dialog()
+        
+        # Список операций
+        ScrollView:
+            BoxLayout:
+                id: operations_list
+                orientation: 'vertical'
+                size_hint_y: None
+                height: self.minimum_height
+                spacing: dp(5)
+                padding: dp(10)
+        
+        # Нижняя навигация
+        BoxLayout:
+            size_hint_y: 0.1
+            padding: dp(5)
+            spacing: dp(5)
+            canvas.before:
+                Color:
+                    rgba: theme_manager.get_color('nav_background')
+                Rectangle:
+                    pos: self.pos
+                    size: self.size
+            
+            Button:
+                text: '🏦 Счета'
+                font_size: 14
+                background_color: theme_manager.get_color('nav_inactive')
+                color: theme_manager.get_color('text_on_primary')
+                on_press: app.root.current = 'accounts'
+            
+            Button:
+                text: '📊 Операции'
+                font_size: 14
+                background_color: theme_manager.get_color('nav_active')
+                color: theme_manager.get_color('text_on_primary')
+                on_press: app.root.current = 'operations'
+            
+            Button:
+                text: '📈 Аналитика'
+                font_size: 14
+                background_color: theme_manager.get_color('nav_inactive')
+                color: theme_manager.get_color('text_on_primary')
+                on_press: app.root.current = 'analytics'
+            
+            Button:
+                text: '⚙️ Еще'
+                font_size: 14
+                background_color: theme_manager.get_color('nav_inactive')
+                color: theme_manager.get_color('text_on_primary')
+                on_press: app.root.current = 'more'
+        
+        # Popup для добавления операции
+        BoxLayout:
+            id: add_operation_popup
+            opacity: 0
+            disabled: True
+            orientation: 'vertical'
+            padding: dp(20)
+            spacing: dp(10)
+            canvas.before:
+                Color:
+                    rgba: 0, 0, 0, 0.5
+                Rectangle:
+                    pos: self.pos
+                    size: self.size
+            
+            BoxLayout:
+                size_hint_y: None
+                height: dp(280)
+                padding: dp(20)
+                spacing: dp(10)
+                orientation: 'vertical'
+                canvas.before:
+                    Color:
+                        rgba: theme_manager.get_color('dialog')
+                    RoundedRectangle:
+                        pos: self.pos
+                        size: self.size
+                        radius: [15]
+                
+                Label:
+                    text: 'Новая операция'
+                    font_size: 20
+                    bold: True
+                    color: theme_manager.get_color('text_primary')
+                    size_hint_y: 0.15
+                
+                BoxLayout:
+                    size_hint_y: 0.15
+                    spacing: dp(10)
+                    
+                    Button:
+                        text: 'Расход'
+                        background_color: theme_manager.get_color('danger')
+                        color: 1, 1, 1, 1
+                        on_press: root.set_type('expense')
+                    
+                    Button:
+                        text: 'Доход'
+                        background_color: theme_manager.get_color('success')
+                        color: 1, 1, 1, 1
+                        on_press: root.set_type('income')
+                
+                TextInput:
+                    id: op_amount_input
+                    hint_text: 'Сумма'
+                    multiline: False
+                    input_filter: 'float'
+                    background_color: theme_manager.get_color('surface_secondary')
+                    foreground_color: theme_manager.get_color('text_primary')
+                    cursor_color: theme_manager.get_color('text_primary')
+                    size_hint_y: 0.15
+                
+                Spinner:
+                    id: op_category_spinner
+                    text: 'Категория'
+                    values: ['Продукты', 'Транспорт', 'Кафе']
+                    background_color: theme_manager.get_color('surface_secondary')
+                    color: theme_manager.get_color('text_primary')
+                    size_hint_y: 0.15
+                
+                TextInput:
+                    id: op_description_input
+                    hint_text: 'Описание (необязательно)'
+                    multiline: False
+                    background_color: theme_manager.get_color('surface_secondary')
+                    foreground_color: theme_manager.get_color('text_primary')
+                    cursor_color: theme_manager.get_color('text_primary')
+                    size_hint_y: 0.15
+                
+                BoxLayout:
+                    size_hint_y: 0.15
+                    spacing: dp(10)
+                    
+                    Button:
+                        text: 'Отмена'
+                        background_color: theme_manager.get_color('button_normal')
+                        color: theme_manager.get_color('text_primary')
+                        on_press: root.hide_add_operation_dialog()
+                    
+                    Button:
+                        text: 'Сохранить'
+                        background_color: theme_manager.get_color('primary')
+                        color: theme_manager.get_color('text_on_primary')
+                        on_press: root.save_transaction()

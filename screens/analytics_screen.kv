@@ -1,0 +1,173 @@
+#:import theme_manager themes.theme_manager
+
+<AnalyticsScreen>:
+    BoxLayout:
+        id: container
+        orientation: 'vertical'
+        
+        # Заголовок
+        BoxLayout:
+            size_hint_y: 0.08
+            padding: dp(16)
+            canvas.before:
+                Color:
+                    rgba: theme_manager.get_color('surface')
+                RoundedRectangle:
+                    pos: self.pos
+                    size: self.size
+                    radius: [0, 0, 15, 15]
+            
+            Label:
+                text: '📈 Аналитика'
+                font_size: 24
+                bold: True
+                color: theme_manager.get_color('text_primary')
+        
+        # Общая статистика
+        BoxLayout:
+            size_hint_y: None
+            height: dp(100)
+            padding: dp(10)
+            spacing: dp(10)
+            
+            BoxLayout:
+                orientation: 'vertical'
+                spacing: dp(5)
+                padding: dp(10)
+                canvas.before:
+                    Color:
+                        rgba: theme_manager.get_color('success')
+                    RoundedRectangle:
+                        pos: self.pos
+                        size: self.size
+                        radius: [10]
+                
+                Label:
+                    text: 'Доходы'
+                    font_size: 14
+                    color: 1, 1, 1, 1
+                    size_hint_y: 0.4
+                
+                Label:
+                    id: total_income_label
+                    text: '+0 ₽'
+                    font_size: 18
+                    bold: True
+                    color: 1, 1, 1, 1
+                    size_hint_y: 0.6
+            
+            BoxLayout:
+                orientation: 'vertical'
+                spacing: dp(5)
+                padding: dp(10)
+                canvas.before:
+                    Color:
+                        rgba: theme_manager.get_color('danger')
+                    RoundedRectangle:
+                        pos: self.pos
+                        size: self.size
+                        radius: [10]
+                
+                Label:
+                    text: 'Расходы'
+                    font_size: 14
+                    color: 1, 1, 1, 1
+                    size_hint_y: 0.4
+                
+                Label:
+                    id: total_expense_label
+                    text: '-0 ₽'
+                    font_size: 18
+                    bold: True
+                    color: 1, 1, 1, 1
+                    size_hint_y: 0.6
+            
+            BoxLayout:
+                orientation: 'vertical'
+                spacing: dp(5)
+                padding: dp(10)
+                canvas.before:
+                    Color:
+                        rgba: theme_manager.get_color('primary')
+                    RoundedRectangle:
+                        pos: self.pos
+                        size: self.size
+                        radius: [10]
+                
+                Label:
+                    text: 'Баланс'
+                    font_size: 14
+                    color: 1, 1, 1, 1
+                    size_hint_y: 0.4
+                
+                Label:
+                    id: balance_label
+                    text: '0 ₽'
+                    font_size: 18
+                    bold: True
+                    color: 1, 1, 1, 1
+                    size_hint_y: 0.6
+        
+        # Расходы по категориям
+        BoxLayout:
+            orientation: 'vertical'
+            padding: dp(10)
+            spacing: dp(5)
+            
+            Label:
+                text: 'Расходы по категориям'
+                font_size: 18
+                bold: True
+                color: theme_manager.get_color('text_primary')
+                size_hint_y: None
+                height: dp(35)
+                halign: 'left'
+            
+            ScrollView:
+                BoxLayout:
+                    id: stats_list
+                    orientation: 'vertical'
+                    size_hint_y: None
+                    height: self.minimum_height
+                    spacing: dp(10)
+                    padding: dp(5)
+        
+        # Нижняя навигация
+        BoxLayout:
+            size_hint_y: 0.1
+            padding: dp(5)
+            spacing: dp(5)
+            canvas.before:
+                Color:
+                    rgba: theme_manager.get_color('nav_background')
+                Rectangle:
+                    pos: self.pos
+                    size: self.size
+            
+            Button:
+                text: '🏦 Счета'
+                font_size: 14
+                background_color: theme_manager.get_color('nav_inactive')
+                color: theme_manager.get_color('text_on_primary')
+                on_press: app.root.current = 'accounts'
+            
+            Button:
+                text: '📊 Операции'
+                font_size: 14
+                background_color: theme_manager.get_color('nav_inactive')
+                color: theme_manager.get_color('text_on_primary')
+                on_press: app.root.current = 'operations'
+            
+            Button:
+                text: '📈 Аналитика'
+                font_size: 14
+                background_color: theme_manager.get_color('nav_active')
+                color: theme_manager.get_color('text_on_primary')
+                on_press: app.root.current = 'analytics'
+            
+            Button:
+                text: '⚙️ Еще'
+                font_size: 14
+                background_color: theme_manager.get_color('nav_inactive')
+                color: theme_manager.get_color('text_on_primary')
+                on_press: app.root.current = 'more'

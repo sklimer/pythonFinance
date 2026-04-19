@@ -407,8 +407,17 @@ class AnalyticsScreen(Screen):
 class MoreScreen(Screen):
     """Экран 'Еще' - настройки"""
     
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+        self._theme_callback = None
+    
     def on_enter(self):
         self.update_theme_switch()
+    
+    def on_leave(self):
+        # Отписываемся от наблюдателей при уходе с экрана
+        if self._theme_callback:
+            theme_manager.unregister_observer(self._theme_callback)
     
     def update_theme_switch(self):
         """Обновляем состояние переключателя темы"""
@@ -423,19 +432,27 @@ class MoreScreen(Screen):
         if theme_status:
             current_theme = theme_manager.get_current_theme()
             theme_status.text = "Темная тема" if current_theme == 'dark' else "Светлая тема"
+        
+        # Подписываемся на изменения темы
+        if not self._theme_callback:
+            self._theme_callback = lambda: self.on_theme_changed()
+        theme_manager.register_observer(self._theme_callback)
+    
+    def on_theme_changed(self):
+        """Вызывается при изменении темы"""
+        self.update_theme_switch()
+        # Принудительно обновляем canvas для перерисовки цветов
+        container = self.ids.get('container')
+        if container:
+            container.canvas.before.clear()
+            with container.canvas.before:
+                Color(*theme_manager.get_color('background'))
+                Rectangle(pos=container.pos, size=container.size)
     
     def toggle_theme(self, instance, value):
         """Переключение темы"""
         new_theme = 'dark' if value else 'light'
         if theme_manager.switch_theme(new_theme):
-            # Обновляем статус
-            theme_status = self.ids.get('theme_status')
-            if theme_status:
-                theme_status.text = "Темная тема" if value else "Светлая тема"
-            
-            # Обновляем все экраны для применения новой темы
-            self.update_all_screens()
-            
             # Показываем сообщение
             message_label = self.ids.get('message_label')
             if message_label:
